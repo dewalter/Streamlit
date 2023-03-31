@@ -12,4 +12,20 @@ col1, col2 = st.columns(2)
 col1.write('# This is Column 1')
 col2.write('# This is Column 2')
 
-movies_data.info()
+st.write("""
+Average Movie Budget, Grouped by Genre
+""")
+avg_budget = movies_data.groupby('genre')['budget'].mean().round()
+avg_budget = avg_budget.reset_index()
+genre = avg_budget['genre']
+avg_bud = avg_budget['budget']
+
+fig = plt.figure(figsize = (19, 10))
+
+plt.bar(genre, avg_bud, color = 'maroon')
+plt.xlabel('genre')
+plt.ylabel('budget')
+plt.title('Matplotlib Bar Chart Showing the Average \
+Budget of Movies in Each Genre')
+
+st.pyplot(fig)
