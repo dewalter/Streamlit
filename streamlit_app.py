@@ -2,6 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.title('Uber pickups in NYC')
+st.title('My First Streamlit App')
 
-streamlit run uber_pickups.py
+streamlit run streamlit_app.py
