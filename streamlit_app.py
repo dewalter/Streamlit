@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.balloons()st.progress(10)with st.spinner('Wait for it...'):    time.sleep(10)
+st.sidebar()
 
 st.title('My First Streamlit App')
 st.text ('Hello everybody, my first text field in streamlit')
