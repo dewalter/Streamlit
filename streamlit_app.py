@@ -1,88 +1,39 @@
+import io
+import os
 import streamlit as st
-import pandas as pd
-import numpy as np
+import PyPDF2
 
-st.container()
-st.title('My First Streamlit App')
-st.text ('Hello everybody, my first text field in streamlit')
+st.title("PDF Compressor")
 
+# Allow user to upload a PDF file
+uploaded_file = st.file_uploader("Choose a PDF file to compress", type=["pdf"])
 
-col1, col2 = st.columns(2)
-col1.write('# This is Column 1')
-col2.write('# This is Column 2')
+if uploaded_file is not None:
+    # Load PDF file into PyPDF2
+    pdf_reader = PyPDF2.PdfFileReader(uploaded_file)
 
+    # Create an empty output PDF file
+    output_pdf = PyPDF2.PdfFileWriter()
 
-st.write("Here's our first attempt at using data to create a table:")
-st.write(pd.DataFrame({
-    'first column': [1, 2, 3, 4],
-    'second column': [10, 20, 30, 40]
-}))
+    # Loop over each page in the input PDF file
+    for page_num in range(pdf_reader.getNumPages()):
+        # Get the current page and its contents
+        page = pdf_reader.getPage(page_num)
+        content = io.BytesIO()
 
+        # Compress the page and write it to the output PDF file
+        page.compressContentStreams()
+        page.writeToStream(content)
+        output_pdf.addPage(PyPDF2.PdfFileReader(content).getPage(0))
 
-chart_data = pd.DataFrame(
-     np.random.randn(20, 3),
-     columns=['a', 'b', 'c'])
+    # Create a temporary file to hold the compressed PDF
+    temp_file = io.BytesIO()
+    output_pdf.write(temp_file)
 
-st.line_chart(chart_data)
-
-
-map_data = pd.DataFrame(
-    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
-    columns=['lat', 'lon'])
-
-st.map(map_data)
-
-
-x = st.slider('x')  # 👈 this is a widget
-st.write(x, 'squared is', x * x)
-
-st.text_input("Your name", key="name")
-
-
-# You can access the value at any point with:
-st.session_state.name
-
-
-if st.checkbox('Show dataframe'):
-    chart_data = pd.DataFrame(
-       np.random.randn(20, 3),
-       columns=['a', 'b', 'c'])
-
-    chart_data
-
-    
-df = pd.DataFrame({
-    'first column': [1, 2, 3, 4],
-    'second column': [10, 20, 30, 40]
-    })
-
-option = st.selectbox(
-    'Which number do you like best?',
-     df['first column'])
-
-'You selected: ', option
-
-
-# Add a selectbox to the sidebar:
-add_selectbox = st.sidebar.selectbox(
-    'How would you like to be contacted?',
-    ('Email', 'Home phone', 'Mobile phone')
-)
-
-# Add a slider to the sidebar:
-add_slider = st.sidebar.slider(
-    'Select a range of values',
-    0.0, 100.0, (25.0, 75.0)
-)
-
-
-left_column, right_column = st.columns(2)
-# You can use a column just like st.sidebar:
-left_column.button('Press me!')
-
-# Or even better, call Streamlit functions inside a "with" block:
-with right_column:
-    chosen = st.radio(
-        'Sorting hat',
-        ("Gryffindor", "Ravenclaw", "Hufflepuff", "Slytherin"))
-    st.write(f"You are in {chosen} house!")
+    # Display download link for compressed PDF
+    st.download_button(
+        label="Download Compressed PDF",
+        data=temp_file.getvalue(),
+        file_name=os.path.splitext(uploaded_file.name)[0] + "_compressed.pdf",
+        mime="application/pdf",
+    )
