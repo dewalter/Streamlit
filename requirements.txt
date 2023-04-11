@@ -1,1 +1,2 @@
-PyPDF2
+PyPDF2==1.26.0
+streamlit==1.4.1
