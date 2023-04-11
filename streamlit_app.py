@@ -13,7 +13,7 @@ if uploaded_file is not None:
     pdf_reader = PyPDF2.PdfReader(uploaded_file)
 
     # Create an empty output PDF file
-    output_pdf = PyPDF2.PdfFileWriter()
+    pdf_writer = PyPDF2.PdfWriter()
 
     # Loop over each page in the input PDF file
     for page_num in range(pdf_reader.getNumPages()):
