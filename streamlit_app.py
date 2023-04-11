@@ -16,7 +16,7 @@ if uploaded_file is not None:
     output_pdf = PyPDF2.PdfWriter()
 
     # Loop over each page in the input PDF file
-    for page_num in range(pdf_reader.numPages):
+    for page_num in range(len(pdf_reader.pages)):
         # Get the current page and its contents
         page = pdf_reader.pages[page_num]
         content = io.BytesIO()
