@@ -1,9 +1,3 @@
-datetime
-pathlib
-zipfile
-streamlit
-streamlit_pydantic
-typing
-pydantic
+io
+os
 PyPDF2
-PIL
