@@ -10,19 +10,23 @@ uploaded_file = st.file_uploader("Choose a PDF file to compress", type=["pdf"])
 
 if uploaded_file is not None:
     # Load PDF file into PyPDF2
-    pdf_reader = PyPDF2.PdfReader(uploaded_file)
+    pdf_reader = PyPDF2.PdfFileReader(uploaded_file)
 
     # Create an empty output PDF file
-    output_pdf = PyPDF2.PdfWriter()
+    output_pdf = PyPDF2.PdfFileWriter()
 
     # Loop over each page in the input PDF file
-    for page_num in range(len(pdf_reader.pages)):
+    for page_num in range(pdf_reader.getNumPages()):
         # Get the current page and its contents
-        page = pdf_reader.pages[page_num]
-        content = io.BytesIO()
+        page = pdf_reader.getPage(page_num)
 
-        # Compress the page and write it to the output PDF file
-        page.compress()
+        # Check if page can be compressed
+        if "/Filter" in page["/Resources"].getObject() and "/FlateDecode" in str(page["/Resources"].getObject()):
+            st.write(f"Page {page_num + 1} is already compressed")
+        else:
+            # Compress the page and write it to the output PDF file
+            page.compressContentStreams()
+        
         output_pdf.addPage(page)
 
     # Create a temporary file to hold the compressed PDF
