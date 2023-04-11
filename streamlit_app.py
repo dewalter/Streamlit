@@ -10,7 +10,7 @@ uploaded_file = st.file_uploader("Choose a PDF file to compress", type=["pdf"])
 
 if uploaded_file is not None:
     # Load PDF file into PyPDF2
-    pdf_reader = PyPDF2.PdfFileReader(uploaded_file)
+    pdf_reader = PyPDF2.PdfReader(uploaded_file)
 
     # Create an empty output PDF file
     output_pdf = PyPDF2.PdfFileWriter()
